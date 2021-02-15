@@ -37,6 +37,53 @@
       allow_aggregations: true
 - table:
     schema: public
+    name: Asset
+  configuration:
+    custom_root_fields:
+      insert: insert_assets
+      select_aggregate: assets_aggregate
+      select: assets
+      update: update_assets
+    custom_column_names: {}
+  insert_permissions:
+  - role: cardano-graphql
+    permission:
+      check: {}
+      columns:
+      - assetId
+      - assetName
+      - description
+      - metadataFetchAttempts
+      - name
+      - policyId
+      backend_only: false
+  select_permissions:
+  - role: cardano-graphql
+    permission:
+      columns:
+      - assetId
+      - assetName
+      - description
+      - metadataFetchAttempts
+      - name
+      - policyId
+      filter: {}
+      limit: 2500
+      allow_aggregations: true
+  update_permissions:
+  - role: cardano-graphql
+    permission:
+      columns:
+      - assetId
+      - assetName
+      - description
+      - metadataFetchAttempts
+      - name
+      - policyId
+      filter: {}
+      check: {}
+- table:
+    schema: public
     name: Block
   configuration:
     custom_root_fields:
@@ -238,8 +285,6 @@
     permission:
       columns:
       - assetId
-      - assetName
-      - policyId
       - quantity
       filter: {}
       limit: 2500
@@ -501,6 +546,14 @@
       select: tokens
     custom_column_names: {}
   object_relationships:
+  - name: asset
+    using:
+      manual_configuration:
+        remote_table:
+          schema: public
+          name: Asset
+        column_mapping:
+          assetId: assetId
   - name: transactionOutput
     using:
       manual_configuration:
@@ -514,12 +567,18 @@
     permission:
       columns:
       - assetId
-      - assetName
-      - policyId
       - quantity
       filter: {}
       limit: 2500
       allow_aggregations: true
+  update_permissions:
+  - role: cardano-graphql
+    permission:
+      columns:
+      - assetId
+      - quantity
+      filter: {}
+      check: {}
 - table:
     schema: public
     name: Transaction
@@ -731,6 +790,9 @@
       filter: {}
       limit: 2500
       allow_aggregations: true
+- table:
+    schema: public
+    name: block
 - table:
     schema: public
     name: pool_owner

@@ -16,5 +16,10 @@ export interface Config {
   hasuraCliPath: string,
   hasuraUri: string,
   jqPath: string,
-  pollingIntervalAdaSupply: number
+  metadataServerUri: string,
+  pollingInterval: {
+    adaSupply: number
+    metadataSync: number
+    metadataSyncRetry: number
+  }
 }

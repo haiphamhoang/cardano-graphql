@@ -1,0 +1,14 @@
+query assets {
+    assets {
+        assetId
+        assetName
+        description
+        name
+        policyId
+    }
+    assets_aggregate {
+        aggregate {
+            count
+        }
+    }
+}

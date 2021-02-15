@@ -1,3 +1,17 @@
+
+CREATE TABLE IF NOT EXISTS "Asset"
+  AS
+  SELECT
+    DISTINCT CONCAT(RIGHT(CONCAT(E'\\', policy), -3), RIGHT(CONCAT(E'\\', name), -3)) as "assetId",
+    RIGHT(CONCAT(E'\\', name), -3) as "assetName",
+    CAST(NULL AS TEXT) AS "description",
+    0 AS "metadataFetchAttempts",
+    CAST(NULL AS TEXT) AS "name",
+    policy as "policyId"
+  FROM ma_tx_out;
+
+ALTER TABLE "Asset" ADD PRIMARY KEY ("assetId");
+
 CREATE VIEW "Block" AS
  SELECT (COALESCE(( SELECT sum((tx.fee)::bigint) AS sum
            FROM tx
@@ -175,18 +189,14 @@ JOIN pool_hash
 
 CREATE VIEW "Mint" AS
 SELECT
-  CONCAT(policy,name) as "assetId",
-  name as "assetName",
-  policy as "policyId",
+  CONCAT(RIGHT(CONCAT(E'\\',policy), -3), RIGHT(CONCAT(E'\\',name), -3)) as "assetId",
   quantity,
   tx_id
 FROM ma_tx_mint;
 
 CREATE VIEW "Token" AS
 SELECT
-  CONCAT(policy,name) as "assetId",
-  name as "assetName",
-  policy as "policyId",
+  CONCAT(RIGHT(CONCAT(E'\\',policy), -3), RIGHT(CONCAT(E'\\',name), -3)) as "assetId",
   quantity,
   tx_out_id
 FROM ma_tx_out;
